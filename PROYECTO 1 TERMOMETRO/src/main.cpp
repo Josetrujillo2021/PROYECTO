@@ -39,6 +39,11 @@
 #define T2 22
 #define T3 15
 
+//Definiendo los nombres de las variables de resolución, largo y rango del ADC
+#define resolucionADC 9
+#define ancho 9
+#define pinRef 35 //sugeto a cambios.
+
 
 
 
@@ -67,7 +72,13 @@
 //CONFIGURACIÓN
 //----------------------------------------------------------------------------------------------------------------------
 void setup() {
-  // put your setup code here, to run once:
+  //seteando las configuraciones del ADC
+  analogReadResolution(resolucionADC);
+  analogSetWidth(ancho);
+  analogSetVRefPin(pinRef); 
+  
+
+  
 }
 
 
