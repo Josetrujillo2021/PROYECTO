@@ -75,6 +75,44 @@ void ConfigurarPWM(void);
 void setup() {
 
   ConfigurarPWM();
+
+  pinMode(B1, INPUT_PULLUP);
+  pinMode(Sensor, INPUT);
+
+  pinMode(Servo, OUTPUT);
+  pinMode(LV, OUTPUT);
+  pinMode(LA, OUTPUT);
+  pinMode(LR, OUTPUT);
+
+  pinMode(A, OUTPUT);
+  pinMode(B, OUTPUT);
+  pinMode(C, OUTPUT);
+  pinMode(D, OUTPUT);
+  pinMode(E, OUTPUT);
+  pinMode(F, OUTPUT);
+  pinMode(G, OUTPUT);
+
+  pinMode(T1, OUTPUT);
+  pinMode(T2, OUTPUT);
+  pinMode(T3, OUTPUT);
+
+  digitalWrite(Servo, LOW);
+  digitalWrite(LV, LOW);
+  digitalWrite(LA, LOW);
+  digitalWrite(LR, LOW);
+  digitalWrite(A, LOW);
+  digitalWrite(B, LOW);
+  digitalWrite(C, LOW);
+  digitalWrite(D, LOW);
+  digitalWrite(E, LOW);
+  digitalWrite(F, LOW);
+  digitalWrite(G, LOW);
+  digitalWrite(T1, LOW);
+  digitalWrite(T2, LOW);
+  digitalWrite(T3, LOW);
+
+
+
 }
 
 
