@@ -39,10 +39,15 @@
 #define T2 22
 #define T3 15
 
+//Definiendo las configuracioens del PWM para el motor y las leds
+#define resolucionPWM 8
+#define FreqPWM 50
 
-
-
-
+//canales del PWM
+#define LVChannel 1
+#define LAChannel 2
+#define LRChannel 3
+#define ServoChannel 4
 
 
 
@@ -53,6 +58,7 @@
 //Prototipos de funciones
 //----------------------------------------------------------------------------------------------------------------------
 
+void ConfigurarPWM(void);
 
 //---------------------------------------------------------------------------------------------------------------------
 //Variables Globales
@@ -67,7 +73,8 @@
 //CONFIGURACIÓN
 //----------------------------------------------------------------------------------------------------------------------
 void setup() {
-  // put your setup code here, to run once:
+
+  ConfigurarPWM();
 }
 
 
@@ -76,4 +83,26 @@ void setup() {
 //---------------------------------------------------------------------------------------------------------------------
 void loop() {
   // put your main code here, to run repeatedly:
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+//Funcion de configuracion de PWM
+//---------------------------------------------------------------------------------------------------------------------
+void ConfigurarPWM(void){
+
+  //En esta función voy a setear las configuraciones del pwm para el servo y las leds
+  ledcSetup(ServoChannel, FreqPWM, resolucionPWM);
+  ledcAttachPin(Servo, ServoChannel);
+
+  //Led Verde
+  ledcSetup(LVChannel, FreqPWM, resolucionPWM);
+  ledcAttachPin(LV, LVChannel);
+
+  //Led Amarilla
+  ledcSetup(LAChannel, FreqPWM, resolucionPWM);
+  ledcAttachPin(LA, LAChannel);
+
+  //Led Roja 
+  ledcSetup(LRChannel, FreqPWM, resolucionPWM);
+  ledcAttachPin(LR, LRChannel);
 }
