@@ -110,9 +110,6 @@ void setup() {
   digitalWrite(T1, LOW);
   digitalWrite(T2, LOW);
   digitalWrite(T3, LOW);
-
-
-
 }
 
 
