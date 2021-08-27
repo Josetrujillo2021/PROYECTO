@@ -130,9 +130,11 @@ void loop() {
 //---------------------------------------------------------------------------------------------------------------------
 
 void MedidorTemperatura(void){
-  Temperatura = analogRead(Sensor);
-  Temperatura = Temperatura/10 //3300/40950 se puede hacer esa operación si quiero dividir aún más mi resolución
-  //Pero con la ecuación de Vout=10mv/°C * T ya me sale, solo debo operarlo todo en mV
+  if (digitalRead(B1)==LOW){
+    Temperatura = analogRead(Sensor);
+    Temperatura = Temperatura/10 //3300/40950 se puede hacer esa operación si quiero dividir aún más mi resolución
+    //Pero con la ecuación de Vout=10mv/°C * T ya me sale, solo debo operarlo todo en mV
+  }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
