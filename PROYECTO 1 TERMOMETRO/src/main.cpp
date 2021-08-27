@@ -54,6 +54,9 @@
 #define ancho 9
 #define pinRef 35 //sugeto a cambios.
 
+#define TempMin 37.0
+#define TempMax 37.5
+
 
 //----------------------------------------------------------------------------------------------------------------------
 //Prototipos de funciones
@@ -61,6 +64,7 @@
 
 void MedidorTemperatura(void);
 void ConfigurarPWM(void);
+void IndicadorTemperatura(void);
 
 //---------------------------------------------------------------------------------------------------------------------
 //Variables Globales
@@ -121,6 +125,7 @@ void setup() {
 //---------------------------------------------------------------------------------------------------------------------
 void loop() {
   MedidorTemperatura();
+  IndicardorTemperatura();
   Serial.println(Temperatura);
   delay(100);
 }
@@ -132,7 +137,7 @@ void loop() {
 void MedidorTemperatura(void){
   if (digitalRead(B1)==LOW){
     Temperatura = analogRead(Sensor);
-    Temperatura = Temperatura/10 //3300/40950 se puede hacer esa operación si quiero dividir aún más mi resolución
+    Temperatura = Temperatura/10; //3300/40950 se puede hacer esa operación si quiero dividir aún más mi resolución
     //Pero con la ecuación de Vout=10mv/°C * T ya me sale, solo debo operarlo todo en mV
   }
 }
@@ -157,4 +162,18 @@ void ConfigurarPWM(void){
   //Led Roja 
   ledcSetup(LRChannel, FreqPWM, resolucionPWM);
   ledcAttachPin(LR, LRChannel);
+}
+
+void IndicardorTemperatura(void){
+  if (Temperatura<TempMin){
+    digitalWrite(LVChannel; 255);
+  }
+
+  else if(Temperatura>=TempMin && Temperatura<TempMax){
+    digitalWrite(LAChannel, 255);
+  }
+
+  else if(Temperatura<=TempMax){
+    digitalWrite(LRChannel, 255);
+  }
 }
