@@ -166,14 +166,20 @@ void ConfigurarPWM(void){
 
 void IndicardorTemperatura(void){
   if (Temperatura<TempMin){
-    digitalWrite(LVChannel; 255);
+    ledcWrite(LVChannel, 255);
+    ledcWrite(LAChannel, 0);
+    ledcWrite(LRChannel, 0);
   }
 
   else if(Temperatura>=TempMin && Temperatura<TempMax){
-    digitalWrite(LAChannel, 255);
+    ledcWrite(LVChannel, 0);
+    ledcWrite(LAChannel, 255);
+    ledcWrite(LRChannel, 0);
   }
 
-  else if(Temperatura<=TempMax){
-    digitalWrite(LRChannel, 255);
+  else if(Temperatura>=TempMax){
+    ledcWrite(LVChannel, 0);
+    ledcWrite(LAChannel, 0);
+    ledcWrite(LRChannel, 255);
   }
 }
