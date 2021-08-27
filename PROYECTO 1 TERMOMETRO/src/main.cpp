@@ -59,25 +59,18 @@
 //Prototipos de funciones
 //----------------------------------------------------------------------------------------------------------------------
 
-void MedidorTemperatura(float medicion);
+void MedidorTemperatura(void);
 void ConfigurarPWM(void);
 
 //---------------------------------------------------------------------------------------------------------------------
 //Variables Globales
 //----------------------------------------------------------------------------------------------------------------------
-float medicion =0; 
 float Temperatura = 0.0; 
 
 //----------------------------------------------------------------------------------------------------------------------
 //ISR  (interrupciones)
 //----------------------------------------------------------------------------------------------------------------------
 
-//Esta interrupción me permite hacer la medición del sensor
-void IRAM_ATTR medicionTemp(){
-  if (digitalRead(B1)==LOW){
-    medicion = analogRead(Sensor);
-  }
-}
 //----------------------------------------------------------------------------------------------------------------------
 //CONFIGURACIÓN
 //----------------------------------------------------------------------------------------------------------------------
@@ -120,8 +113,6 @@ void setup() {
   digitalWrite(T1, LOW);
   digitalWrite(T2, LOW);
   digitalWrite(T3, LOW);
-
-  attachInterrupt(B1, medicionTemp, RISING);
 }
 
 
@@ -129,7 +120,7 @@ void setup() {
 //Loop principal
 //---------------------------------------------------------------------------------------------------------------------
 void loop() {
-  MedidorTemperatura(medicion);
+  MedidorTemperatura();
   Serial.println(Temperatura);
   delay(100);
 }
@@ -138,8 +129,9 @@ void loop() {
 //Función de ADC de temperatura
 //---------------------------------------------------------------------------------------------------------------------
 
-void MedidorTemperatura(float valor){
-  Temperatura = valor/10; //3300/40950 se puede hacer esa operación si quiero dividir aún más mi resolución
+void MedidorTemperatura(void){
+  Temperatura = analogRead(Sensor);
+  Temperatura = Temperatura/10 //3300/40950 se puede hacer esa operación si quiero dividir aún más mi resolución
   //Pero con la ecuación de Vout=10mv/°C * T ya me sale, solo debo operarlo todo en mV
 }
 
