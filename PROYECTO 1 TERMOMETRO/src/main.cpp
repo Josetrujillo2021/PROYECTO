@@ -199,7 +199,7 @@ void IndicardorTemperatura(void){
 void MovimientoServo(void){
 
   
-  if (digitalRead(B1)==HIGH){
+  /*if (digitalRead(B1)==HIGH){
     estado = Temperatura;  
   }
   else {
@@ -215,5 +215,24 @@ void MovimientoServo(void){
    DutycicleS = DutycicleS - Cambio; //0.7 para 18 a 19.5 °C y 2.3 para 37 a 37.5°C
     delay(100);
     ledcWrite(ServoChannel, DutycicleS);
+  }*/
+
+  if (Temperatura <= 21.0){
+    DutycicleS = 8.8;//es igual a 30°
+    delay(100);
+    ledcWrite(ServoChannel, DutycicleS);
+  }
+
+  else if (Temperatura > 21.0 &&Temperatura <= 22.5){
+    DutycicleS = 17.5; //es igual a 90°
+    delay(100);
+    ledcWrite(ServoChannel, DutycicleS);
   } 
+
+  else if (Temperatura > 22.5){
+    DutycicleS = 26.3; //es igual a 135°
+    delay(100);
+    ledcWrite(ServoChannel, DutycicleS);
+
+  }
 }
