@@ -39,19 +39,28 @@
 #define T2 22
 #define T3 15
 
+//Definiendo las configuracioens del PWM para el motor y las leds
+#define resolucionPWM 8
+#define FreqPWM 50
+
+//canales del PWM
+#define LVChannel 1
+#define LAChannel 2
+#define LRChannel 3
+#define ServoChannel 4
+
 //Definiendo los nombres de las variables de resolución, largo y rango del ADC
 #define resolucionADC 9
 #define ancho 9
 #define pinRef 35 //sugeto a cambios.
 
 
-
-
-
 //----------------------------------------------------------------------------------------------------------------------
 //Prototipos de funciones
 //----------------------------------------------------------------------------------------------------------------------
+
 void MedidorTemperatura(void);
+void ConfigurarPWM(void);
 
 //---------------------------------------------------------------------------------------------------------------------
 //Variables Globales
@@ -66,11 +75,44 @@ float Temperatura = 0.0;
 //CONFIGURACIÓN
 //----------------------------------------------------------------------------------------------------------------------
 void setup() {
-  //seteando las configuraciones del ADC
-  Serial.begin(115200);
-  
 
-  
+  Serial.begin(115200);
+  ConfigurarPWM();
+
+  pinMode(B1, INPUT_PULLUP);
+
+
+  pinMode(Servo, OUTPUT);
+  pinMode(LV, OUTPUT);
+  pinMode(LA, OUTPUT);
+  pinMode(LR, OUTPUT);
+
+  pinMode(A, OUTPUT);
+  pinMode(B, OUTPUT);
+  pinMode(C, OUTPUT);
+  pinMode(D, OUTPUT);
+  pinMode(E, OUTPUT);
+  pinMode(F, OUTPUT);
+  pinMode(G, OUTPUT);
+
+  pinMode(T1, OUTPUT);
+  pinMode(T2, OUTPUT);
+  pinMode(T3, OUTPUT);
+
+  digitalWrite(Servo, LOW);
+  digitalWrite(LV, LOW);
+  digitalWrite(LA, LOW);
+  digitalWrite(LR, LOW);
+  digitalWrite(A, LOW);
+  digitalWrite(B, LOW);
+  digitalWrite(C, LOW);
+  digitalWrite(D, LOW);
+  digitalWrite(E, LOW);
+  digitalWrite(F, LOW);
+  digitalWrite(G, LOW);
+  digitalWrite(T1, LOW);
+  digitalWrite(T2, LOW);
+  digitalWrite(T3, LOW);
 }
 
 
@@ -83,7 +125,33 @@ void loop() {
   delay(100);
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+//Función de ADC de temperatura
+//---------------------------------------------------------------------------------------------------------------------
+
 void MedidorTemperatura(void){
   Temperatura = analogRead(Sensor);
   Temperatura = (100+Temperatura)/10.0;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+//Funcion de configuracion de PWM
+//---------------------------------------------------------------------------------------------------------------------
+void ConfigurarPWM(void){
+
+  //En esta función voy a setear las configuraciones del pwm para el servo y las leds
+  ledcSetup(ServoChannel, FreqPWM, resolucionPWM);
+  ledcAttachPin(Servo, ServoChannel);
+
+  //Led Verde
+  ledcSetup(LVChannel, FreqPWM, resolucionPWM);
+  ledcAttachPin(LV, LVChannel);
+
+  //Led Amarilla
+  ledcSetup(LAChannel, FreqPWM, resolucionPWM);
+  ledcAttachPin(LA, LAChannel);
+
+  //Led Roja 
+  ledcSetup(LRChannel, FreqPWM, resolucionPWM);
+  ledcAttachPin(LR, LRChannel);
 }
