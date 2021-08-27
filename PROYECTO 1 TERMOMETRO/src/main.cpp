@@ -131,7 +131,8 @@ void loop() {
 
 void MedidorTemperatura(void){
   Temperatura = analogRead(Sensor);
-  Temperatura = (100+Temperatura)/10.0;
+  Temperatura = Temperatura/10 //3300/40950 se puede hacer esa operación si quiero dividir aún más mi resolución
+  //Pero con la ecuación de Vout=10mv/°C * T ya me sale, solo debo operarlo todo en mV
 }
 
 //---------------------------------------------------------------------------------------------------------------------
