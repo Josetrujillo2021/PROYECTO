@@ -54,8 +54,10 @@
 #define ancho 9
 #define pinRef 35 //sugeto a cambios.
 
+//Temperaturas maximas y minimas
 #define TempMin 37.0
 #define TempMax 37.5
+#define Cambio 0.7 //Este me permite hacer el cambio de cantidad que le voy a sumar al PWM del servo, 0.7 para 18 a 19.5 °C y 2.3 para 37 a 37.5°C
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -65,12 +67,13 @@
 void MedidorTemperatura(void);
 void ConfigurarPWM(void);
 void IndicadorTemperatura(void);
+void MovimientoServo(void);
 
 //---------------------------------------------------------------------------------------------------------------------
 //Variables Globales
 //----------------------------------------------------------------------------------------------------------------------
 float Temperatura = 0.0; 
-
+float DutycicleS = 0; 
 //----------------------------------------------------------------------------------------------------------------------
 //ISR  (interrupciones)
 //----------------------------------------------------------------------------------------------------------------------
@@ -126,6 +129,7 @@ void setup() {
 void loop() {
   MedidorTemperatura();
   IndicardorTemperatura();
+  MovimientoServo();
   Serial.println(Temperatura);
   delay(100);
 }
@@ -136,7 +140,7 @@ void loop() {
 
 void MedidorTemperatura(void){
   if (digitalRead(B1)==LOW){
-    Temperatura = analogRead(Sensor);
+    Temperatura = analogRead(Sensor); //me permite asignarle el valor analogico del sensor LM35
     Temperatura = Temperatura/10; //3300/40950 se puede hacer esa operación si quiero dividir aún más mi resolución
     //Pero con la ecuación de Vout=10mv/°C * T ya me sale, solo debo operarlo todo en mV
   }
@@ -163,8 +167,11 @@ void ConfigurarPWM(void){
   ledcSetup(LRChannel, FreqPWM, resolucionPWM);
   ledcAttachPin(LR, LRChannel);
 }
-
+//---------------------------------------------------------------------------------------------------------------------
+//Funcion de indicador de la temperatura de las leds
+//---------------------------------------------------------------------------------------------------------------------
 void IndicardorTemperatura(void){
+  //cada if me permite encender que led mostrar dependiendo del valor de la temperatura mínima y máxima
   if (Temperatura<TempMin){
     ledcWrite(LVChannel, 255);
     ledcWrite(LAChannel, 0);
@@ -181,5 +188,23 @@ void IndicardorTemperatura(void){
     ledcWrite(LVChannel, 0);
     ledcWrite(LAChannel, 0);
     ledcWrite(LRChannel, 255);
+  }
+}
+//---------------------------------------------------------------------------------------------------------------------
+//Funcion de Movimiento Servomotor
+//---------------------------------------------------------------------------------------------------------------------
+void MovimientoServo(void){
+
+  if (Temperatura = Temperatura +0.1 && DutycicleS <35){
+    DutycicleS = DutycicleS + Cambio; //0.7 para 18 a 19.5 °C y 2.3 para 37 a 37.5°C
+    delay(100);
+    ledcWrite(ServoChannel, DutycicleS);
+  }
+
+  else if (Temperatura = Temperatura -0.1 && DutycicleS >0){
+   DutycicleS = DutycicleS - Cambio; //0.7 para 18 a 19.5 °C y 2.3 para 37 a 37.5°C
+    delay(100);
+    ledcWrite(ServoChannel, DutycicleS);
+  } 
   }
 }
