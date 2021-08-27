@@ -55,8 +55,8 @@
 #define pinRef 35 //sugeto a cambios.
 
 //Temperaturas maximas y minimas
-#define TempMin 37.0
-#define TempMax 37.5
+#define TempMin 21.0
+#define TempMax 22.5
 #define Cambio 0.7 //Este me permite hacer el cambio de cantidad que le voy a sumar al PWM del servo, 0.7 para 18 a 19.5 °C y 2.3 para 37 a 37.5°C
 
 
@@ -74,6 +74,7 @@ void MovimientoServo(void);
 //----------------------------------------------------------------------------------------------------------------------
 float Temperatura = 0.0; 
 float DutycicleS = 0; 
+float estado=0.0;
 //----------------------------------------------------------------------------------------------------------------------
 //ISR  (interrupciones)
 //----------------------------------------------------------------------------------------------------------------------
@@ -131,6 +132,8 @@ void loop() {
   IndicardorTemperatura();
   MovimientoServo();
   Serial.println(Temperatura);
+  Serial.println(DutycicleS);
+  Serial.println(estado);
   delay(100);
 }
 
@@ -195,16 +198,19 @@ void IndicardorTemperatura(void){
 //---------------------------------------------------------------------------------------------------------------------
 void MovimientoServo(void){
 
-  if (Temperatura = Temperatura +0.1 && DutycicleS <35){
+  
+
+  estado = Temperatura;  
+
+  if (Temperatura < (estado +0.1) && DutycicleS <35 && digitalRead(B1)==LOW){
     DutycicleS = DutycicleS + Cambio; //0.7 para 18 a 19.5 °C y 2.3 para 37 a 37.5°C
     delay(100);
     ledcWrite(ServoChannel, DutycicleS);
   }
 
-  else if (Temperatura = Temperatura -0.1 && DutycicleS >0){
+  else if (Temperatura > (estado -0.1) && DutycicleS >0 && digitalRead(B1)==LOW) {
    DutycicleS = DutycicleS - Cambio; //0.7 para 18 a 19.5 °C y 2.3 para 37 a 37.5°C
     delay(100);
     ledcWrite(ServoChannel, DutycicleS);
   } 
-  }
 }
