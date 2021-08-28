@@ -119,7 +119,7 @@ void setup() {
   digitalWrite(F, LOW);
   digitalWrite(G, LOW);
   digitalWrite(T1, LOW);
-  digitalWrite(T2, LOW);
+  digitalWrite(T2, HIGH);
   digitalWrite(T3, LOW);
 }
 
