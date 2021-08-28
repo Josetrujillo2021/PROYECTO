@@ -68,13 +68,17 @@ void MedidorTemperatura(void);
 void ConfigurarPWM(void);
 void IndicadorTemperatura(void);
 void MovimientoServo(void);
+void Displays(void);
 
 //---------------------------------------------------------------------------------------------------------------------
 //Variables Globales
 //----------------------------------------------------------------------------------------------------------------------
 float Temperatura = 0.0; 
 float DutycicleS = 0; 
-float estado=0.0;
+float estado = 0.0;
+int decenas = 0; 
+int unidades = 0;
+int decimales = 0; 
 //----------------------------------------------------------------------------------------------------------------------
 //ISR  (interrupciones)
 //----------------------------------------------------------------------------------------------------------------------
@@ -131,9 +135,14 @@ void loop() {
   MedidorTemperatura();
   IndicardorTemperatura();
   MovimientoServo();
+  Displays();
   Serial.println(Temperatura);
   Serial.println(DutycicleS);
   Serial.println(estado);
+  Serial.print(decenas);
+  Serial.print(unidades);
+  Serial.print('.');
+  Serial.println(decimales); 
   delay(100);
 }
 
@@ -235,4 +244,12 @@ void MovimientoServo(void){
     ledcWrite(ServoChannel, DutycicleS);
 
   }
+}
+//---------------------------------------------------------------------------------------------------------------------
+//Funcion de Display Temperatura  
+//---------------------------------------------------------------------------------------------------------------------
+void Displays(void){
+  decenas = Temperatura/10;
+  unidades = Temperatura - decenas*10;
+  decimales = (Temperatura*10) - (decenas*100) - (unidades*10); 
 }
