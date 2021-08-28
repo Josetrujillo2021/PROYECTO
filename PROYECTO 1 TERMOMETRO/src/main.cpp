@@ -36,8 +36,8 @@
 
 //defino los pines para los transitores de activación de los 3 displays
 #define T1 4
-#define T2 22
-#define T3 15
+#define T2 15
+#define T3 22
 
 //Definiendo las configuracioens del PWM para el motor y las leds
 #define resolucionPWM 8
