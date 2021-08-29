@@ -59,6 +59,9 @@
 #define TempMax 22.5
 #define Cambio 0.7 //Este me permite hacer el cambio de cantidad que le voy a sumar al PWM del servo, 0.7 para 18 a 19.5 °C y 2.3 para 37 a 37.5°C
 
+//definición de prescaler para timer
+#define prescaler 1000000
+
 
 //----------------------------------------------------------------------------------------------------------------------
 //Prototipos de funciones
@@ -68,7 +71,10 @@ void MedidorTemperatura(void);
 void ConfigurarPWM(void);
 void IndicadorTemperatura(void);
 void MovimientoServo(void);
-void Displays(void);
+void Displays(int valor);
+
+//FUNCIÓN DEL TIMER
+configurarTimer(); 
 
 //---------------------------------------------------------------------------------------------------------------------
 //Variables Globales
@@ -80,10 +86,34 @@ int decenas = 0;
 int unidades = 0;
 int decimales = 0;
 int valor = 0; 
+
+//inicialización timer
+hw_timer_t *timer= NULL; 
+
 //----------------------------------------------------------------------------------------------------------------------
 //ISR  (interrupciones)
 //----------------------------------------------------------------------------------------------------------------------
-
+//Interrupción del Timer
+void IRAM_ATTR ISRTimer0()
+{
+  while (timer >timer +1)
+  {
+    T1 = 1; 
+    T2 = 0;
+    T3 = 0; 
+    Displays(decenas);
+    T1 = 0; 
+    T2 = 1;
+    T3 = 0; 
+    Displays(unidades);
+    T1 = 0; 
+    T2 = 0;
+    T3 = 1; 
+    Displays(decimales);
+  }
+   
+  }
+}
 //----------------------------------------------------------------------------------------------------------------------
 //CONFIGURACIÓN
 //----------------------------------------------------------------------------------------------------------------------
@@ -126,6 +156,8 @@ void setup() {
   digitalWrite(T1, LOW);
   digitalWrite(T2, HIGH);
   digitalWrite(T3, LOW);
+
+  configurarTimer();
 }
 
 
@@ -136,7 +168,7 @@ void loop() {
   MedidorTemperatura();
   IndicardorTemperatura();
   MovimientoServo();
-  Displays();
+  Displays(valor);
   Serial.println(Temperatura);
   Serial.println(DutycicleS);
   Serial.println(estado);
@@ -249,7 +281,7 @@ void MovimientoServo(void){
 //---------------------------------------------------------------------------------------------------------------------
 //Funcion de Display Temperatura  
 //---------------------------------------------------------------------------------------------------------------------
-void Displays(void){
+void Displays(int valor){
   decenas = Temperatura/10;
   unidades = Temperatura - decenas*10;
   decimales = (Temperatura*10) - (decenas*100) - (unidades*10); 
@@ -352,4 +384,30 @@ void Displays(void){
   default:
     break;
   }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//Función para configurar Timer
+//----------------------------------------------------------------------------------------------------------------------
+void configurarTimer(void){
+  //Frec oscilación (Fosc) = 80Mhz = 80,000,000 Hz
+  // Fosc / Prescaler = 80,000,000 / 1,000,000 = 80 Hz
+  // Tiempo Oscilación (Tosc) = 1 / Fosc = 12.5 ms
+
+  // Paso 2: Seleccionar Timer
+  //Timer 0; prescaler = 1,000,000 , flanco de subida
+  timer = timerBegin(0, prescaler, true);
+
+  //Paso 3: Asignar el Handler de la interrupción
+  timerAttachInterrupt(timer, &ISRTimer0, true);
+
+  //Paso 4: Programar Alarma
+  //Tic = 12.5  ms
+  //Frecuencia = se necesita 250 ms, para que sean 20 veces
+  timerAlarmWrite(timer, 250000, true);
+
+  //Paso 5: Iniciar la Alarma
+  timerAlarmEnable(timer);
+
+
 }
