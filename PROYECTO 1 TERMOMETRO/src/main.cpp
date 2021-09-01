@@ -73,8 +73,6 @@ void IndicadorTemperatura(void);
 void MovimientoServo(void);
 void Displays(int valor);
 
-//FUNCIÓN DEL TIMER
-configurarTimer(); 
 
 //---------------------------------------------------------------------------------------------------------------------
 //Variables Globales
@@ -87,8 +85,10 @@ int unidades = 0;
 int decimales = 0;
 int valor = 0; 
 
-//inicialización timer
-hw_timer_t *timer= NULL; 
+//Variables de temporizador
+long LastTime; 
+int sampleTime = 250; 
+int ContadorDisplay = 1; 
 
 //----------------------------------------------------------------------------------------------------------------------
 //ISR  (interrupciones)
@@ -102,17 +102,11 @@ void IRAM_ATTR ISRTimer0()
     T2 = 0;
     T3 = 0; 
     Displays(decenas);
-    T1 = 0; 
-    T2 = 1;
-    T3 = 0; 
-    Displays(unidades);
-    T1 = 0; 
-    T2 = 0;
-    T3 = 1; 
-    Displays(decimales);
+    
+    
   }
    
-  }
+  
 }
 //----------------------------------------------------------------------------------------------------------------------
 //CONFIGURACIÓN
@@ -157,7 +151,7 @@ void setup() {
   digitalWrite(T2, HIGH);
   digitalWrite(T3, LOW);
 
-  configurarTimer();
+  LastTime = millis();
 }
 
 
@@ -165,6 +159,42 @@ void setup() {
 //Loop principal
 //---------------------------------------------------------------------------------------------------------------------
 void loop() {
+  //con este if puedo hacer el cambio del estado dependiendo del tiempo que haya pasado
+  if (millis() - LastTime >= sampleTime){
+    LastTime = millis(); //le doy el valor actual a LastTime
+    if (ContadorDisplay == 1){
+      //en este estado muestro las decenas
+      T1 = 1; 
+      T2 = 0;
+      T3 = 0; 
+      Displays(decenas);
+      ContadorDisplay++; 
+    }
+
+    else if (ContadorDisplay == 2){
+      //en este estado muestro las Unidades
+      T1 = 0; 
+      T2 = 1;
+      T3 = 0; 
+      Displays(unidades);
+      ContadorDisplay++; 
+    }
+
+    else if (ContadorDisplay == 3){
+      //en este estado muestro los decimales
+      T1 = 0; 
+      T2 = 0;
+      T3 = 1; 
+      Displays(decimales);
+      ContadorDisplay++; 
+    }
+
+    else if (ContadorDisplay >3){
+      ContadorDisplay = 1; 
+
+    }
+    
+  }
   MedidorTemperatura();
   IndicardorTemperatura();
   MovimientoServo();
@@ -386,28 +416,3 @@ void Displays(int valor){
   }
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-//Función para configurar Timer
-//----------------------------------------------------------------------------------------------------------------------
-void configurarTimer(void){
-  //Frec oscilación (Fosc) = 80Mhz = 80,000,000 Hz
-  // Fosc / Prescaler = 80,000,000 / 1,000,000 = 80 Hz
-  // Tiempo Oscilación (Tosc) = 1 / Fosc = 12.5 ms
-
-  // Paso 2: Seleccionar Timer
-  //Timer 0; prescaler = 1,000,000 , flanco de subida
-  timer = timerBegin(0, prescaler, true);
-
-  //Paso 3: Asignar el Handler de la interrupción
-  timerAttachInterrupt(timer, &ISRTimer0, true);
-
-  //Paso 4: Programar Alarma
-  //Tic = 12.5  ms
-  //Frecuencia = se necesita 250 ms, para que sean 20 veces
-  timerAlarmWrite(timer, 250000, true);
-
-  //Paso 5: Iniciar la Alarma
-  timerAlarmEnable(timer);
-
-
-}
