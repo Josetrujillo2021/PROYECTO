@@ -122,19 +122,19 @@ void setup() {
   pinMode(T2, OUTPUT);
   pinMode(T3, OUTPUT);
 
-  digitalWrite(Servo, LOW);
+    digitalWrite(Servo, LOW);
   digitalWrite(LV, LOW);
   digitalWrite(LA, LOW);
   digitalWrite(LR, LOW);
-  digitalWrite(A, LOW);
-  digitalWrite(B, LOW);
-  digitalWrite(C, LOW);
-  digitalWrite(D, LOW);
-  digitalWrite(E, LOW);
-  digitalWrite(F, LOW);
-  digitalWrite(G, LOW);
+  digitalWrite(A, HIGH);
+  digitalWrite(B, HIGH);
+  digitalWrite(C, HIGH);
+  digitalWrite(D, HIGH);
+  digitalWrite(E, HIGH);
+  digitalWrite(F, HIGH);
+  digitalWrite(G, HIGH);
   digitalWrite(T1, LOW);
-  digitalWrite(T2, HIGH);
+  digitalWrite(T2, LOW);
   digitalWrite(T3, LOW);
 
   LastTime = millis();
@@ -150,27 +150,27 @@ void loop() {
     LastTime = millis(); //le doy el valor actual a LastTime
     if (ContadorDisplay == 1){
       //en este estado muestro las decenas
-      T1 = 1; 
-      T2 = 0;
-      T3 = 0; 
+      digitalWrite(T1, HIGH);
+      digitalWrite(T2, LOW);
+      digitalWrite(T3, LOW);
       Displays(decenas);
       ContadorDisplay++; 
     }
 
     else if (ContadorDisplay == 2){
       //en este estado muestro las Unidades
-      T1 = 0; 
-      T2 = 1;
-      T3 = 0; 
+      digitalWrite(T1, LOW);
+      digitalWrite(T2, HIGH);
+      digitalWrite(T3, LOW);
       Displays(unidades);
       ContadorDisplay++; 
     }
 
     else if (ContadorDisplay == 3){
       //en este estado muestro los decimales
-      T1 = 0; 
-      T2 = 0;
-      T3 = 1; 
+      digitalWrite(T1, LOW);
+      digitalWrite(T2, LOW);
+      digitalWrite(T3, HIGH); 
       Displays(decimales);
       ContadorDisplay++; 
     }
@@ -319,7 +319,7 @@ void Displays(int valor){
     digitalWrite(A, HIGH);
     digitalWrite(B, LOW);
     digitalWrite(C, LOW); 
-    digitalWrite(D, HIGH;
+    digitalWrite(D, HIGH);
     digitalWrite(E, HIGH);
     digitalWrite(F, HIGH);
     digitalWrite(G, HIGH);
