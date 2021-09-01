@@ -31,8 +31,8 @@
 #define C 27
 #define D 14
 #define E 12
-#define F 13
-#define G 23
+#define F 23
+#define G 13
 
 //defino los pines para los transitores de activación de los 3 displays
 #define T1 4
@@ -87,7 +87,7 @@ int valor = 0;
 
 //Variables de temporizador
 long LastTime; 
-int sampleTime = 16; 
+int sampleTime = 5; 
 int ContadorDisplay = 1; 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -122,7 +122,7 @@ void setup() {
   pinMode(T2, OUTPUT);
   pinMode(T3, OUTPUT);
 
-    digitalWrite(Servo, LOW);
+  digitalWrite(Servo, LOW);
   digitalWrite(LV, LOW);
   digitalWrite(LA, LOW);
   digitalWrite(LR, LOW);
@@ -148,7 +148,7 @@ void loop() {
   //con este if puedo hacer el cambio del estado dependiendo del tiempo que haya pasado
   if (millis() - LastTime >= sampleTime){
     LastTime = millis(); //le doy el valor actual a LastTime
-    if (ContadorDisplay == 1){
+   if (ContadorDisplay == 1){
       //en este estado muestro las decenas
       digitalWrite(T1, HIGH);
       digitalWrite(T2, LOW);
@@ -179,8 +179,8 @@ void loop() {
       ContadorDisplay = 1; 
 
     }
-    
   }
+  
   MedidorTemperatura();
   IndicardorTemperatura();
   MovimientoServo();
@@ -192,7 +192,7 @@ void loop() {
   Serial.print(unidades);
   Serial.print('.');
   Serial.println(decimales); 
-  delay(100);
+  delay(1);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -277,19 +277,19 @@ void MovimientoServo(void){
 
   if (Temperatura <= 21.0){
     DutycicleS = 8.8;//es igual a 30°
-    delay(100);
+    delay(5);
     ledcWrite(ServoChannel, DutycicleS);
   }
 
   else if (Temperatura > 21.0 &&Temperatura <= 22.5){
     DutycicleS = 17.5; //es igual a 90°
-    delay(100);
+    delay(5);
     ledcWrite(ServoChannel, DutycicleS);
   } 
 
   else if (Temperatura > 22.5){
     DutycicleS = 26.3; //es igual a 135°
-    delay(100);
+    delay(5);
     ledcWrite(ServoChannel, DutycicleS);
 
   }
@@ -396,8 +396,6 @@ void Displays(int valor){
     digitalWrite(E, HIGH);
     digitalWrite(F, LOW);
     digitalWrite(G, LOW);
-    break;
-  default:
     break;
   }
 }
