@@ -92,6 +92,8 @@ int valor = 0;
 
 //contador de Adafruit
 int count = 0;
+long LastTime; 
+int sampleTime = 3000; 
 
 //----------------------------------------------------------------------------------------------------------------------
 //ISR  (interrupciones)
@@ -157,6 +159,7 @@ void setup() {
   // we are connected
   Serial.println();
   Serial.println(io.statusText());
+  LastTime = millis();
 
 }
 
@@ -168,19 +171,19 @@ void setup() {
 void loop() {
   
   io.run();
+  if (millis()- LastTime >= sampleTime){
+    // save count to the 'counter' feed on Adafruit IO
+    Serial.print("sending -> ");
+    Serial.println(count);
+    termometro->save(Temperatura);
 
-  // save count to the 'counter' feed on Adafruit IO
-  Serial.print("sending -> ");
-  Serial.println(count);
-  termometro->save(Temperatura);
+    // increment the count by 1
+    count++;
 
-  // increment the count by 1
-  count++;
-
-  // Adafruit IO is rate limited for publishing, so a delay is required in
-  // between feed->save events. In this example, we will wait three seconds
-  // (1000 milliseconds == 1 second) during each loop.
-  delay(3000);
+    // Adafruit IO is rate limited for publishing, so a delay is required in
+    // between feed->save events. In this example, we will wait three seconds
+    // (1000 milliseconds == 1 second) during each loop.
+  }
 
   Displays(valor);
   
