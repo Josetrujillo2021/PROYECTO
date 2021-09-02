@@ -9,6 +9,16 @@
 //Librerías
 //----------------------------------------------------------------------------------------------------------------------
 
+#define IO_USERNAME "josetrujillo21"
+#define IO_KEY "aio_HHdu05vFJ5xEsXvxUVmG4wHCoKXc"
+
+/******************************* WIFI **************************************/
+#define WIFI_SSID "CLARO1_2D9750"
+#define WIFI_PASS "684s2YEQzM"
+
+#include "AdafruitIO_WiFi.h"
+AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
+
 #include <Arduino.h>
 #include "esp_adc_cal.h" //esta librería es para poder tener una mejor lectura del ADC
 
@@ -66,6 +76,9 @@ void IndicadorTemperatura(void); //indicador de temperatura con leds
 void MovimientoServo(void); //indicador de temperatura con servo
 void Displays(int valor); //función para mostrar los números en display según el valor obtenido
 
+//envio de datos a Adafruit
+AdafruitIO_Feed *termometro = io.feed("Termómetro");
+
 
 //---------------------------------------------------------------------------------------------------------------------
 //Variables Globales
@@ -76,6 +89,9 @@ int decenas = 0;
 int unidades = 0;
 int decimales = 0;
 int valor = 0; 
+
+//contador de Adafruit
+int count = 0;
 
 //----------------------------------------------------------------------------------------------------------------------
 //ISR  (interrupciones)
@@ -124,7 +140,26 @@ void setup() {
   digitalWrite(T2, LOW);
   digitalWrite(T3, LOW);
 
+  //Configuración Adafruit
+  while(! Serial);
+
+  Serial.print("Connecting to Adafruit IO");
+
+  // connect to io.adafruit.com
+  io.connect();
+
+  // wait for a connection
+  while(io.status() < AIO_CONNECTED) {
+    Serial.print(".");
+    delay(500);
+  }
+
+  // we are connected
+  Serial.println();
+  Serial.println(io.statusText());
+
 }
+
 
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -132,6 +167,21 @@ void setup() {
 //---------------------------------------------------------------------------------------------------------------------
 void loop() {
   
+  io.run();
+
+  // save count to the 'counter' feed on Adafruit IO
+  Serial.print("sending -> ");
+  Serial.println(count);
+  termometro->save(Temperatura);
+
+  // increment the count by 1
+  count++;
+
+  // Adafruit IO is rate limited for publishing, so a delay is required in
+  // between feed->save events. In this example, we will wait three seconds
+  // (1000 milliseconds == 1 second) during each loop.
+  delay(3000);
+
   Displays(valor);
   
   //la siguiente secuencia me permite mostra la temperatura en los displays sin números fantasma
