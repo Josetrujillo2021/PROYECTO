@@ -146,7 +146,7 @@ void setup() {
 //---------------------------------------------------------------------------------------------------------------------
 void loop() {
   //con este if puedo hacer el cambio del estado dependiendo del tiempo que haya pasado
-  if (millis() - LastTime >= sampleTime){
+  /*if (millis() - LastTime >= sampleTime){
     LastTime = millis(); //le doy el valor actual a LastTime
    if (ContadorDisplay == 1){
       //en este estado muestro las decenas
@@ -179,7 +179,23 @@ void loop() {
       ContadorDisplay = 1; 
 
     }
-  }
+  }*/
+  digitalWrite(T1, HIGH);
+  digitalWrite(T2, LOW);
+  digitalWrite(T3, LOW);
+  Displays(decenas);
+  delay(5);
+
+  digitalWrite(T1, LOW);
+  digitalWrite(T2, HIGH);
+  digitalWrite(T3, LOW);
+  Displays(unidades);
+  delay(5);
+
+  digitalWrite(T1, LOW);
+  digitalWrite(T2, LOW);
+  digitalWrite(T3, HIGH); 
+  Displays(decimales);
   
   MedidorTemperatura();
   IndicardorTemperatura();
