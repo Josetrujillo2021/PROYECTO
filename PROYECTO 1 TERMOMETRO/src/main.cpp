@@ -10,6 +10,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 #include <Arduino.h>
+#include "esp_adc_cal.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 //Definición de pines
@@ -31,7 +32,7 @@
 #define C 27
 #define D 14
 #define E 12
-#define F 23
+#define f 23
 #define G 13
 
 //defino los pines para los transitores de activación de los 3 displays
@@ -79,16 +80,10 @@ void Displays(int valor);
 //----------------------------------------------------------------------------------------------------------------------
 float Temperatura = 0.0; 
 float DutycicleS = 0; 
-float estado = 0.0;
 int decenas = 0; 
 int unidades = 0;
 int decimales = 0;
 int valor = 0; 
-
-//Variables de temporizador
-long LastTime; 
-int sampleTime = 5; 
-int ContadorDisplay = 1; 
 
 //----------------------------------------------------------------------------------------------------------------------
 //ISR  (interrupciones)
@@ -115,7 +110,7 @@ void setup() {
   pinMode(C, OUTPUT);
   pinMode(D, OUTPUT);
   pinMode(E, OUTPUT);
-  pinMode(F, OUTPUT);
+  pinMode(f, OUTPUT);
   pinMode(G, OUTPUT);
 
   pinMode(T1, OUTPUT);
@@ -131,13 +126,12 @@ void setup() {
   digitalWrite(C, HIGH);
   digitalWrite(D, HIGH);
   digitalWrite(E, HIGH);
-  digitalWrite(F, HIGH);
+  digitalWrite(f, HIGH);
   digitalWrite(G, HIGH);
   digitalWrite(T1, LOW);
   digitalWrite(T2, LOW);
   digitalWrite(T3, LOW);
 
-  LastTime = millis();
 }
 
 
@@ -145,41 +139,10 @@ void setup() {
 //Loop principal
 //---------------------------------------------------------------------------------------------------------------------
 void loop() {
-  //con este if puedo hacer el cambio del estado dependiendo del tiempo que haya pasado
-  /*if (millis() - LastTime >= sampleTime){
-    LastTime = millis(); //le doy el valor actual a LastTime
-   if (ContadorDisplay == 1){
-      //en este estado muestro las decenas
-      digitalWrite(T1, HIGH);
-      digitalWrite(T2, LOW);
-      digitalWrite(T3, LOW);
-      Displays(decenas);
-      ContadorDisplay++; 
-    }
-
-    else if (ContadorDisplay == 2){
-      //en este estado muestro las Unidades
-      digitalWrite(T1, LOW);
-      digitalWrite(T2, HIGH);
-      digitalWrite(T3, LOW);
-      Displays(unidades);
-      ContadorDisplay++; 
-    }
-
-    else if (ContadorDisplay == 3){
-      //en este estado muestro los decimales
-      digitalWrite(T1, LOW);
-      digitalWrite(T2, LOW);
-      digitalWrite(T3, HIGH); 
-      Displays(decimales);
-      ContadorDisplay++; 
-    }
-
-    else if (ContadorDisplay >3){
-      ContadorDisplay = 1; 
-
-    }
-  }*/
+  
+  Displays(valor);
+  
+  //la siguiente secuencia me permite mostra la temperatura en los displays sin números fantasma
   digitalWrite(T1, HIGH);
   digitalWrite(T2, LOW);
   digitalWrite(T3, LOW);
@@ -196,14 +159,14 @@ void loop() {
   digitalWrite(T2, LOW);
   digitalWrite(T3, HIGH); 
   Displays(decimales);
+  delay(5);
   
   MedidorTemperatura();
-  IndicardorTemperatura();
+  IndicadorTemperatura();
   MovimientoServo();
-  Displays(valor);
+  
   Serial.println(Temperatura);
   Serial.println(DutycicleS);
-  Serial.println(estado);
   Serial.print(decenas);
   Serial.print(unidades);
   Serial.print('.');
@@ -217,7 +180,7 @@ void loop() {
 
 void MedidorTemperatura(void){
   if (digitalRead(B1)==LOW){
-    Temperatura = analogRead(Sensor); //me permite asignarle el valor analogico del sensor LM35
+    Temperatura = analogReadMilliVolts(Sensor); //me permite asignarle el valor analogico del sensor LM35
     Temperatura = Temperatura/10; //3300/40950 se puede hacer esa operación si quiero dividir aún más mi resolución
     //Pero con la ecuación de Vout=10mv/°C * T ya me sale, solo debo operarlo todo en mV
   }
@@ -247,7 +210,7 @@ void ConfigurarPWM(void){
 //---------------------------------------------------------------------------------------------------------------------
 //Funcion de indicador de la temperatura de las leds
 //---------------------------------------------------------------------------------------------------------------------
-void IndicardorTemperatura(void){
+void IndicadorTemperatura(void){
   //cada if me permite encender que led mostrar dependiendo del valor de la temperatura mínima y máxima
   if (Temperatura<TempMin){
     ledcWrite(LVChannel, 255);
@@ -328,7 +291,7 @@ void Displays(int valor){
     digitalWrite(C, LOW); 
     digitalWrite(D, LOW);
     digitalWrite(E, LOW);
-    digitalWrite(F, LOW);
+    digitalWrite(f, LOW);
     digitalWrite(G, HIGH);
     break;
   case 1: 
@@ -337,7 +300,7 @@ void Displays(int valor){
     digitalWrite(C, LOW); 
     digitalWrite(D, HIGH);
     digitalWrite(E, HIGH);
-    digitalWrite(F, HIGH);
+    digitalWrite(f, HIGH);
     digitalWrite(G, HIGH);
     break;
   case 2:
@@ -346,7 +309,7 @@ void Displays(int valor){
     digitalWrite(C, HIGH); 
     digitalWrite(D, LOW);
     digitalWrite(E, LOW);
-    digitalWrite(F, HIGH);
+    digitalWrite(f, HIGH);
     digitalWrite(G, LOW);
     break; 
   case 3: 
@@ -355,7 +318,7 @@ void Displays(int valor){
     digitalWrite(C, LOW); 
     digitalWrite(D, LOW);
     digitalWrite(E, HIGH);
-    digitalWrite(F, HIGH);
+    digitalWrite(f, HIGH);
     digitalWrite(G, LOW);
     break;
 
@@ -365,7 +328,7 @@ void Displays(int valor){
     digitalWrite(C, LOW); 
     digitalWrite(D, HIGH);
     digitalWrite(E, HIGH);
-    digitalWrite(F, LOW);
+    digitalWrite(f, LOW);
     digitalWrite(G, LOW);
     break;  
   case 5: 
@@ -374,7 +337,7 @@ void Displays(int valor){
     digitalWrite(C, LOW); 
     digitalWrite(D, LOW);
     digitalWrite(E, HIGH);
-    digitalWrite(F, LOW);
+    digitalWrite(f, LOW);
     digitalWrite(G, LOW);
     break;
   case 6: 
@@ -383,7 +346,7 @@ void Displays(int valor){
     digitalWrite(C, LOW); 
     digitalWrite(D, LOW);
     digitalWrite(E, LOW);
-    digitalWrite(F, LOW);
+    digitalWrite(f, LOW);
     digitalWrite(G, LOW);
     break;
   case 7: 
@@ -392,7 +355,7 @@ void Displays(int valor){
     digitalWrite(C, LOW); 
     digitalWrite(D, HIGH);
     digitalWrite(E, HIGH);
-    digitalWrite(F, HIGH);
+    digitalWrite(f, HIGH);
     digitalWrite(G, HIGH);
     break;
   case 8: 
@@ -401,7 +364,7 @@ void Displays(int valor){
     digitalWrite(C, LOW); 
     digitalWrite(D, LOW);
     digitalWrite(E, LOW);
-    digitalWrite(F, LOW);
+    digitalWrite(f, LOW);
     digitalWrite(G, LOW);
     break;
   case 9: 
@@ -410,7 +373,7 @@ void Displays(int valor){
     digitalWrite(C, LOW); 
     digitalWrite(D, HIGH);
     digitalWrite(E, HIGH);
-    digitalWrite(F, LOW);
+    digitalWrite(f, LOW);
     digitalWrite(G, LOW);
     break;
   }
