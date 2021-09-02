@@ -10,7 +10,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 #include <Arduino.h>
-#include "esp_adc_cal.h"
+#include "esp_adc_cal.h" //esta librería es para poder tener una mejor lectura del ADC
 
 //----------------------------------------------------------------------------------------------------------------------
 //Definición de pines
@@ -50,29 +50,21 @@
 #define LRChannel 3
 #define ServoChannel 4
 
-//Definiendo los nombres de las variables de resolución, largo y rango del ADC
-#define resolucionADC 9
-#define ancho 9
-#define pinRef 35 //sugeto a cambios.
-
 //Temperaturas maximas y minimas
 #define TempMin 21.0
 #define TempMax 22.5
 #define Cambio 0.7 //Este me permite hacer el cambio de cantidad que le voy a sumar al PWM del servo, 0.7 para 18 a 19.5 °C y 2.3 para 37 a 37.5°C
-
-//definición de prescaler para timer
-#define prescaler 1000000
 
 
 //----------------------------------------------------------------------------------------------------------------------
 //Prototipos de funciones
 //----------------------------------------------------------------------------------------------------------------------
 
-void MedidorTemperatura(void);
-void ConfigurarPWM(void);
-void IndicadorTemperatura(void);
-void MovimientoServo(void);
-void Displays(int valor);
+void MedidorTemperatura(void); //medición del sensor ADC
+void ConfigurarPWM(void); //Configuración de los canales y pines de PWM
+void IndicadorTemperatura(void); //indicador de temperatura con leds
+void MovimientoServo(void); //indicador de temperatura con servo
+void Displays(int valor); //función para mostrar los números en display según el valor obtenido
 
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -234,7 +226,7 @@ void IndicadorTemperatura(void){
 //Funcion de Movimiento Servomotor
 //---------------------------------------------------------------------------------------------------------------------
 void MovimientoServo(void){
-  
+
   if (Temperatura <= 21.0){
     DutycicleS = 8.8;//es igual a 30°
     delay(5);
