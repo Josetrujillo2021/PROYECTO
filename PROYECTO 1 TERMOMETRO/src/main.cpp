@@ -17,7 +17,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 //defino los pines que voy a utilizar del microprocesador para la toma de lectura (B1) y el sensor de temperatura
-#define B1 32
+#define b1 32
 #define Sensor 33
 
 //Defino los pines de salida de los leds y el servomotor 
@@ -97,7 +97,7 @@ void setup() {
   Serial.begin(115200);
   ConfigurarPWM();
 
-  pinMode(B1, INPUT_PULLUP);
+  pinMode(b1, INPUT_PULLUP);
 
 
   pinMode(Servo, OUTPUT);
@@ -179,7 +179,7 @@ void loop() {
 //---------------------------------------------------------------------------------------------------------------------
 
 void MedidorTemperatura(void){
-  if (digitalRead(B1)==LOW){
+  if (digitalRead(b1)==LOW){
     Temperatura = analogReadMilliVolts(Sensor); //me permite asignarle el valor analogico del sensor LM35
     Temperatura = Temperatura/10; //3300/40950 se puede hacer esa operación si quiero dividir aún más mi resolución
     //Pero con la ecuación de Vout=10mv/°C * T ya me sale, solo debo operarlo todo en mV
@@ -234,26 +234,7 @@ void IndicadorTemperatura(void){
 //Funcion de Movimiento Servomotor
 //---------------------------------------------------------------------------------------------------------------------
 void MovimientoServo(void){
-
   
-  /*if (digitalRead(B1)==HIGH){
-    estado = Temperatura;  
-  }
-  else {
-    estado = estado; 
-  }
-  if (Temperatura > estado && DutycicleS <35 && digitalRead(B1)==LOW){
-    DutycicleS = DutycicleS + Cambio; //0.7 para 18 a 19.5 °C y 2.3 para 37 a 37.5°C
-    delay(100);
-    ledcWrite(ServoChannel, DutycicleS);
-  }
-
-  else if (Temperatura < estado && DutycicleS >0 && digitalRead(B1)==LOW) {
-   DutycicleS = DutycicleS - Cambio; //0.7 para 18 a 19.5 °C y 2.3 para 37 a 37.5°C
-    delay(100);
-    ledcWrite(ServoChannel, DutycicleS);
-  }*/
-
   if (Temperatura <= 21.0){
     DutycicleS = 8.8;//es igual a 30°
     delay(5);
