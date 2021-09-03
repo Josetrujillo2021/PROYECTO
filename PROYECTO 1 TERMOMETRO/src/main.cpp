@@ -10,7 +10,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 #define IO_USERNAME "josetrujillo21"
-#define IO_KEY "aio_HHdu05vFJ5xEsXvxUVmG4wHCoKXc"
+#define IO_KEY "aio_CGCW96pN8NUJxy7Hk5mMzqfQNkDP"
 
 /******************************* WIFI **************************************/
 #define WIFI_SSID "CLARO1_2D9750"
@@ -95,6 +95,8 @@ int count = 0;
 long LastTime; 
 int sampleTime = 3000; 
 
+unsigned long tiempo = 0; 
+
 //----------------------------------------------------------------------------------------------------------------------
 //ISR  (interrupciones)
 //----------------------------------------------------------------------------------------------------------------------
@@ -170,8 +172,8 @@ void setup() {
 //---------------------------------------------------------------------------------------------------------------------
 void loop() {
   
-  io.run();
   if (millis()- LastTime >= sampleTime){
+    io.run();
     // save count to the 'counter' feed on Adafruit IO
     Serial.print("sending -> ");
     Serial.println(count);
@@ -183,8 +185,10 @@ void loop() {
     // Adafruit IO is rate limited for publishing, so a delay is required in
     // between feed->save events. In this example, we will wait three seconds
     // (1000 milliseconds == 1 second) during each loop.
+    //delay(3000);
+    LastTime = millis();
   }
-
+  
   Displays(valor);
   
   //la siguiente secuencia me permite mostra la temperatura en los displays sin números fantasma
@@ -192,19 +196,25 @@ void loop() {
   digitalWrite(T2, LOW);
   digitalWrite(T3, LOW);
   Displays(decenas);
-  delay(5);
+  //delay(5);
+  tiempo = millis();
+  while (millis()< tiempo +5);
 
   digitalWrite(T1, LOW);
   digitalWrite(T2, HIGH);
   digitalWrite(T3, LOW);
   Displays(unidades);
-  delay(5);
+  //delay(5);
+  tiempo = millis();
+  while (millis()< tiempo +5);
 
   digitalWrite(T1, LOW);
   digitalWrite(T2, LOW);
   digitalWrite(T3, HIGH); 
   Displays(decimales);
-  delay(5);
+  //delay(5);
+  tiempo = millis();
+  while (millis()< tiempo +5);
   
   MedidorTemperatura();
   IndicadorTemperatura();
@@ -216,7 +226,10 @@ void loop() {
   Serial.print(unidades);
   Serial.print('.');
   Serial.println(decimales); 
-  delay(1);
+  //delay(1);
+  tiempo = millis();
+  while (millis()< tiempo +1);
+  
 }
 
 //---------------------------------------------------------------------------------------------------------------------
