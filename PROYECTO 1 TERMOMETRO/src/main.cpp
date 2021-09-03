@@ -10,7 +10,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 #define IO_USERNAME "josetrujillo21"
-#define IO_KEY "aio_CGCW96pN8NUJxy7Hk5mMzqfQNkDP"
+#define IO_KEY "aio_QyWY94iAErtSIi3k1m0BAtE17dUM"
 
 /******************************* WIFI **************************************/
 #define WIFI_SSID "CLARO1_2D9750"
