@@ -16,7 +16,7 @@
 #define WIFI_SSID "CLARO1_2D9750"
 #define WIFI_PASS "684s2YEQzM"
 
-#include "AdafruitIO_WiFi.h"
+#include "AdafruitIO_WiFi.h"  //esta es la librería de Adafruit
 AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
 
 #include <Arduino.h>
@@ -61,9 +61,9 @@ AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
 #define ServoChannel 4
 
 //Temperaturas maximas y minimas
-#define TempMin 21.0
-#define TempMax 22.5
-#define Cambio 0.7 //Este me permite hacer el cambio de cantidad que le voy a sumar al PWM del servo, 0.7 para 18 a 19.5 °C y 2.3 para 37 a 37.5°C
+#define TempMin 37.0
+#define TempMax 37.5
+#define Cambio 2.3 //Este me permite hacer el cambio de cantidad que le voy a sumar al PWM del servo, 0.7 para 18 a 19.5 °C y 2.3 para 37 a 37.5°C
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -105,12 +105,12 @@ unsigned long tiempo = 0;
 //CONFIGURACIÓN
 //----------------------------------------------------------------------------------------------------------------------
 void setup() {
-
+  //se inicializó el reloj del ESP32
   Serial.begin(115200);
   ConfigurarPWM();
-
+  
+  //configuración de los pines
   pinMode(b1, INPUT_PULLUP);
-
 
   pinMode(Servo, OUTPUT);
   pinMode(LV, OUTPUT);
@@ -149,16 +149,16 @@ void setup() {
 
   Serial.print("Connecting to Adafruit IO");
 
-  // connect to io.adafruit.com
+  // conexión a io.adafruit.com
   io.connect();
 
-  // wait for a connection
+  // esperando la conexión
   while(io.status() < AIO_CONNECTED) {
     Serial.print(".");
     delay(500);
   }
 
-  // we are connected
+  //  Se conectó al servido de Adafruit
   Serial.println();
   Serial.println(io.statusText());
   LastTime = millis();
@@ -172,20 +172,18 @@ void setup() {
 //---------------------------------------------------------------------------------------------------------------------
 void loop() {
   
+  //este if permite mandar los datos recibidos del sensor a los servidores de adafruit
   if (millis()- LastTime >= sampleTime){
     io.run();
-    // save count to the 'counter' feed on Adafruit IO
+    // Se manda la información al servidor
     Serial.print("sending -> ");
     Serial.println(count);
     termometro->save(Temperatura);
 
-    // increment the count by 1
+    // se incrementa el contador por cada dato que se envía
     count++;
+    // se envian los datos cada 3 segundos dependiendo del valor de Sampletime y la comparación de la resta
 
-    // Adafruit IO is rate limited for publishing, so a delay is required in
-    // between feed->save events. In this example, we will wait three seconds
-    // (1000 milliseconds == 1 second) during each loop.
-    //delay(3000);
     LastTime = millis();
   }
   
@@ -196,7 +194,7 @@ void loop() {
   digitalWrite(T2, LOW);
   digitalWrite(T3, LOW);
   Displays(decenas);
-  //delay(5);
+  //este while permite hace un delay de 5 segundos
   tiempo = millis();
   while (millis()< tiempo +5);
 
@@ -204,7 +202,6 @@ void loop() {
   digitalWrite(T2, HIGH);
   digitalWrite(T3, LOW);
   Displays(unidades);
-  //delay(5);
   tiempo = millis();
   while (millis()< tiempo +5);
 
@@ -212,24 +209,13 @@ void loop() {
   digitalWrite(T2, LOW);
   digitalWrite(T3, HIGH); 
   Displays(decimales);
-  //delay(5);
   tiempo = millis();
   while (millis()< tiempo +5);
   
+  //se inicializan cada una de las funciones para el termómetro
   MedidorTemperatura();
   IndicadorTemperatura();
   MovimientoServo();
-  
-  Serial.println(Temperatura);
-  Serial.println(DutycicleS);
-  Serial.print(decenas);
-  Serial.print(unidades);
-  Serial.print('.');
-  Serial.println(decimales); 
-  //delay(1);
-  tiempo = millis();
-  while (millis()< tiempo +1);
-  
 }
 
 //---------------------------------------------------------------------------------------------------------------------
