@@ -10,7 +10,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 #define IO_USERNAME "josetrujillo21"
-#define IO_KEY "aio_qfbI48CQYFw741X5CybU6Oxvjl39"
+#define IO_KEY "aio_BFyf95KRt1oIUzwuafJFq4pPgYhh"
 
 /******************************* WIFI **************************************/
 #define WIFI_SSID "CLARO1_2D9750"
@@ -61,9 +61,9 @@ AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
 #define ServoChannel 4
 
 //Temperaturas maximas y minimas
-#define TempMin 37.0
-#define TempMax 37.5
-#define Cambio 2.3 //Este me permite hacer el cambio de cantidad que le voy a sumar al PWM del servo, 0.7 para 18 a 19.5 °C y 2.3 para 37 a 37.5°C
+#define TempMin 27.0
+#define TempMax 28.5
+
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -279,19 +279,19 @@ void IndicadorTemperatura(void){
 //---------------------------------------------------------------------------------------------------------------------
 void MovimientoServo(void){
 
-  if (Temperatura <= 21.0){
+  if (Temperatura <= TempMin){
     DutycicleS = 8.8;//es igual a 30°
     delay(5);
     ledcWrite(ServoChannel, DutycicleS);
   }
 
-  else if (Temperatura > 21.0 &&Temperatura <= 22.5){
+  else if (Temperatura > TempMin &&Temperatura <= TempMax){
     DutycicleS = 17.5; //es igual a 90°
     delay(5);
     ledcWrite(ServoChannel, DutycicleS);
   } 
 
-  else if (Temperatura > 22.5){
+  else if (Temperatura > TempMax){
     DutycicleS = 26.3; //es igual a 135°
     delay(5);
     ledcWrite(ServoChannel, DutycicleS);
@@ -403,4 +403,3 @@ void Displays(int valor){
     break;
   }
 }
-
