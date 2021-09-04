@@ -10,7 +10,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 #define IO_USERNAME "josetrujillo21"
-#define IO_KEY "aio_CGCW96pN8NUJxy7Hk5mMzqfQNkDP"
+#define IO_KEY "aio_BFyf95KRt1oIUzwuafJFq4pPgYhh"
 
 /******************************* WIFI **************************************/
 #define WIFI_SSID "CLARO1_2D9750"
@@ -47,7 +47,6 @@ AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
 
 //defino los pines para los transitores de activación de los 3 displays
 #define T1 4
-<<<<<<< HEAD
 #define T2 22
 #define T3 15
 
@@ -61,10 +60,6 @@ AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
 #define LRChannel 3
 #define ServoChannel 4
 
-=======
-#define T2 15
-#define T3 22
->>>>>>> PARTE-1-ADC
 
 //Definiendo las configuracioens del PWM para el motor y las leds
 #define resolucionPWM 8
@@ -77,18 +72,15 @@ AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
 #define ServoChannel 4
 
 //Temperaturas maximas y minimas
-#define TempMin 37.0
-#define TempMax 37.5
-#define Cambio 2.3 //Este me permite hacer el cambio de cantidad que le voy a sumar al PWM del servo, 0.7 para 18 a 19.5 °C y 2.3 para 37 a 37.5°C
+#define TempMin 27.0
+#define TempMax 28.5
+
 
 
 //----------------------------------------------------------------------------------------------------------------------
 //Prototipos de funciones
 //----------------------------------------------------------------------------------------------------------------------
 
-<<<<<<< HEAD
-void ConfigurarPWM(void);
-=======
 void MedidorTemperatura(void); //medición del sensor ADC
 void ConfigurarPWM(void); //Configuración de los canales y pines de PWM
 void IndicadorTemperatura(void); //indicador de temperatura con leds
@@ -98,7 +90,6 @@ void Displays(int valor); //función para mostrar los números en display según
 //envio de datos a Adafruit
 AdafruitIO_Feed *termometro = io.feed("Termómetro");
 
->>>>>>> PARTE-1-ADC
 
 //---------------------------------------------------------------------------------------------------------------------
 //Variables Globales
@@ -125,20 +116,12 @@ unsigned long tiempo = 0;
 //CONFIGURACIÓN
 //----------------------------------------------------------------------------------------------------------------------
 void setup() {
-<<<<<<< HEAD
-
-  ConfigurarPWM();
-
-  pinMode(B1, INPUT_PULLUP);
-  pinMode(Sensor, INPUT);
-=======
   //se inicializó el reloj del ESP32
   Serial.begin(115200);
   ConfigurarPWM();
   
   //configuración de los pines
   pinMode(b1, INPUT_PULLUP);
->>>>>>> PARTE-1-ADC
 
   pinMode(Servo, OUTPUT);
   pinMode(LV, OUTPUT);
@@ -150,11 +133,7 @@ void setup() {
   pinMode(C, OUTPUT);
   pinMode(D, OUTPUT);
   pinMode(E, OUTPUT);
-<<<<<<< HEAD
-  pinMode(F, OUTPUT);
-=======
   pinMode(f, OUTPUT);
->>>>>>> PARTE-1-ADC
   pinMode(G, OUTPUT);
 
   pinMode(T1, OUTPUT);
@@ -165,18 +144,6 @@ void setup() {
   digitalWrite(LV, LOW);
   digitalWrite(LA, LOW);
   digitalWrite(LR, LOW);
-<<<<<<< HEAD
-  digitalWrite(A, LOW);
-  digitalWrite(B, LOW);
-  digitalWrite(C, LOW);
-  digitalWrite(D, LOW);
-  digitalWrite(E, LOW);
-  digitalWrite(F, LOW);
-  digitalWrite(G, LOW);
-  digitalWrite(T1, LOW);
-  digitalWrite(T2, LOW);
-  digitalWrite(T3, LOW);
-=======
   digitalWrite(A, HIGH);
   digitalWrite(B, HIGH);
   digitalWrite(C, HIGH);
@@ -207,7 +174,6 @@ void setup() {
   Serial.println(io.statusText());
   LastTime = millis();
 
->>>>>>> PARTE-1-ADC
 }
 
 
@@ -216,9 +182,6 @@ void setup() {
 //Loop principal
 //---------------------------------------------------------------------------------------------------------------------
 void loop() {
-<<<<<<< HEAD
-  // put your main code here, to run repeatedly:
-=======
   
   //este if permite mandar los datos recibidos del sensor a los servidores de adafruit
   if (millis()- LastTime >= sampleTime){
@@ -276,7 +239,6 @@ void MedidorTemperatura(void){
     Temperatura = Temperatura/10; //3300/40950 se puede hacer esa operación si quiero dividir aún más mi resolución
     //Pero con la ecuación de Vout=10mv/°C * T ya me sale, solo debo operarlo todo en mV
   }
->>>>>>> PARTE-1-ADC
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -331,19 +293,19 @@ void IndicadorTemperatura(void){
 //---------------------------------------------------------------------------------------------------------------------
 void MovimientoServo(void){
 
-  if (Temperatura <= 21.0){
+  if (Temperatura <= TempMin){
     DutycicleS = 8.8;//es igual a 30°
     delay(5);
     ledcWrite(ServoChannel, DutycicleS);
   }
 
-  else if (Temperatura > 21.0 &&Temperatura <= 22.5){
+  else if (Temperatura > TempMin &&Temperatura <= TempMax){
     DutycicleS = 17.5; //es igual a 90°
     delay(5);
     ledcWrite(ServoChannel, DutycicleS);
   } 
 
-  else if (Temperatura > 22.5){
+  else if (Temperatura > TempMax){
     DutycicleS = 26.3; //es igual a 135°
     delay(5);
     ledcWrite(ServoChannel, DutycicleS);
@@ -454,6 +416,10 @@ void Displays(int valor){
     digitalWrite(G, LOW);
     break;
   }
+<<<<<<< HEAD
 }
 
 >>>>>>> PARTE-1-ADC
+=======
+}
+>>>>>>> main
