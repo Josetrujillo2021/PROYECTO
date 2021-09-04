@@ -47,19 +47,8 @@ AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
 
 //defino los pines para los transitores de activación de los 3 displays
 #define T1 4
-#define T2 22
-#define T3 15
-
-//Definiendo las configuracioens del PWM para el motor y las leds
-#define resolucionPWM 8
-#define FreqPWM 50
-
-//canales del PWM
-#define LVChannel 1
-#define LAChannel 2
-#define LRChannel 3
-#define ServoChannel 4
-
+#define T2 15
+#define T3 22
 
 //Definiendo las configuracioens del PWM para el motor y las leds
 #define resolucionPWM 8
@@ -261,9 +250,6 @@ void ConfigurarPWM(void){
   //Led Roja 
   ledcSetup(LRChannel, FreqPWM, resolucionPWM);
   ledcAttachPin(LR, LRChannel);
-<<<<<<< HEAD
-}
-=======
 }
 //---------------------------------------------------------------------------------------------------------------------
 //Funcion de indicador de la temperatura de las leds
@@ -416,7 +402,6 @@ void Displays(int valor){
     digitalWrite(G, LOW);
     break;
   }
-<<<<<<< HEAD
 }
 
 >>>>>>> PARTE-1-ADC
