@@ -10,7 +10,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 #define IO_USERNAME "josetrujillo21"
-#define IO_KEY "aio_BFyf95KRt1oIUzwuafJFq4pPgYhh"
+#define IO_KEY "aio_qyJy82OA7R0Fi29624QPFlujKepv"
 
 /******************************* WIFI **************************************/
 #define WIFI_SSID "CLARO1_2D9750"
@@ -63,7 +63,7 @@ AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
 //Temperaturas maximas y minimas
 #define TempMin 27.0
 #define TempMax 28.5
-
+#define Cambio 2.3 //Este me permite hacer el cambio de cantidad que le voy a sumar al PWM del servo, 0.7 para 18 a 19.5 °C y 2.3 para 37 a 37.5°C
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -172,20 +172,7 @@ void setup() {
 //---------------------------------------------------------------------------------------------------------------------
 void loop() {
   
-  //este if permite mandar los datos recibidos del sensor a los servidores de adafruit
-  if (millis()- LastTime >= sampleTime){
-    io.run();
-    // Se manda la información al servidor
-    Serial.print("sending -> ");
-    Serial.println(count);
-    termometro->save(Temperatura);
 
-    // se incrementa el contador por cada dato que se envía
-    count++;
-    // se envian los datos cada 3 segundos dependiendo del valor de Sampletime y la comparación de la resta
-
-    LastTime = millis();
-  }
   
   Displays(valor);
   
@@ -227,6 +214,20 @@ void MedidorTemperatura(void){
     Temperatura = analogReadMilliVolts(Sensor); //me permite asignarle el valor analogico del sensor LM35
     Temperatura = Temperatura/10; //3300/40950 se puede hacer esa operación si quiero dividir aún más mi resolución
     //Pero con la ecuación de Vout=10mv/°C * T ya me sale, solo debo operarlo todo en mV
+      //este if permite mandar los datos recibidos del sensor a los servidores de adafruit
+    if (millis()- LastTime >= sampleTime){
+      io.run();
+      // Se manda la información al servidor
+      Serial.print("sending -> ");
+      Serial.println(count);
+      termometro->save(Temperatura);
+
+      // se incrementa el contador por cada dato que se envía
+      count++;
+      // se envian los datos cada 3 segundos dependiendo del valor de Sampletime y la comparación de la resta
+
+      LastTime = millis();
+  }
   }
 }
 
@@ -403,8 +404,3 @@ void Displays(int valor){
     break;
   }
 }
-
->>>>>>> PARTE-1-ADC
-=======
-}
->>>>>>> main
